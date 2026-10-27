@@ -7,3 +7,5 @@ export type { HealResult } from "./healing.js";
 export { CheckpointLog } from "./checkpoint.js";
 export { createProxy } from "./proxy.js";
 export type { ProxyOpts } from "./proxy.js";
+export { createDashboard } from "./dashboard.js";
+export type { DashboardOptions } from "./dashboard.js";

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AEGIS MIND</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #05070d;
+    color: #9fe8ff;
+    font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+  }
+  header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #12324a;
+    background: radial-gradient(80% 120% at 0% 0%, #0a1a2e 0%, #05070d 70%);
+  }
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: #c9f6ff;
+    text-shadow: 0 0 14px #22d3ee, 0 0 40px #0ea5e9;
+  }
+  .sub { margin: 6px 0 0; font-size: 13px; color: #4f7fa8; letter-spacing: 2px; }
+  #feed {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+    padding: 24px;
+    align-items: start;
+  }
+  .card {
+    border: 1px solid #12324a;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: linear-gradient(160deg, #0a1422, #060b14);
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.08);
+  }
+  .type {
+    color: #ffd166;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 13px;
+  }
+  .type.budget-exhausted, .type.halted, .type.model-error { color: #ff5d73; text-shadow: 0 0 8px #ff5d73; }
+  .type.recovered, .type.checkpoint { color: #5df2a6; }
+  .meta { margin: 6px 0 0; color: #4f7fa8; font-size: 12px; word-break: break-all; }
+</style>
+</head>
+<body>
+<header>
+  <h1>AEGIS MIND</h1>
+  <p class="sub">supervisor telemetry &middot; live stream</p>
+</header>
+<div id="feed"></div>
+<script>
+  const feed = document.getElementById("feed");
+  const MAX = 50;
+  const buf = [];
+
+  function render() {
+    feed.textContent = "";
+    for (const ev of buf) {
+      const card = document.createElement("div");
+      card.className = "card";
+      const type = document.createElement("div");
+      type.className = "type " + String(ev.type).toLowerCase();
+      type.textContent = ev.type;
+      const meta = document.createElement("p");
+      meta.className = "meta";
+      meta.textContent = "run " + ev.run + " \u00b7 ts " + ev.ts;
+      card.appendChild(type);
+      card.appendChild(meta);
+      feed.appendChild(card);
+    }
+  }
+
+  const es = new EventSource("/events");
+  es.onmessage = (m) => {
+    try {
+      buf.push(JSON.parse(m.data));
+      if (buf.length > MAX) buf.shift();
+      render();
+    } catch {
+      // malformed frame; skip
+    }
+  };
+</script>
+</body>
+</html>
