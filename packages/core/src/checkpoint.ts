@@ -42,13 +42,23 @@ export class CheckpointLog {
     return next;
   }
 
+  private records(): unknown[] {
+    const lines = readFileSync(this.path(), "utf8").trim().split("\n").filter(Boolean);
+    const out: unknown[] = [];
+    for (const line of lines) {
+      try {
+        out.push(JSON.parse(line));
+      } catch {
+        // skip malformed line
+      }
+    }
+    return out;
+  }
+
   list(): number[] {
     try {
-      return readFileSync(this.path(), "utf8")
-        .trim()
-        .split("\n")
-        .filter(Boolean)
-        .map((l) => JSON.parse(l) as { type: string; detail?: { snap?: number } })
+      return this.records()
+        .map((r) => r as { type?: string; detail?: { snap?: number } })
         .filter((e) => e.type === "checkpoint")
         .map((e) => e.detail?.snap)
         .filter((s): s is number => typeof s === "number");
@@ -63,12 +73,12 @@ export class CheckpointLog {
 
   replay(from: number): Event[] {
     try {
-      return readFileSync(this.path(), "utf8")
-        .trim()
-        .split("\n")
-        .filter(Boolean)
-        .map((l) => JSON.parse(l) as Event)
-        .filter((e) => e.type === "checkpoint" && typeof e.detail.snap === "number" && e.detail.snap >= from);
+      return this.records()
+        .map((r) => r as Event)
+        .filter((e) => {
+          const snap = (e as { detail?: { snap?: number } }).detail?.snap;
+          return e.type === "checkpoint" && typeof snap === "number" && snap >= from;
+        });
     } catch {
       return [];
     }
