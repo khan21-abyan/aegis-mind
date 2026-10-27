@@ -4,3 +4,4 @@ export type { KernelOptions } from "./kernel.js";
 export type { Event, EventType, TurnContext, PolicyDecision } from "./types.js";
 export { Heal } from "./healing.js";
 export type { HealResult } from "./healing.js";
+export { CheckpointLog } from "./checkpoint.js";
