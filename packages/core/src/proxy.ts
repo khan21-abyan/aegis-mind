@@ -15,6 +15,7 @@ export interface ProxyOpts {
 
 const HOP_HEADERS = new Set(["host", "connection"]);
 const TURN_COST = 0.001;
+const UPSTREAM_TIMEOUT_MS = 30_000;
 
 const stripHop = (h: http.IncomingHttpHeaders): Record<string, string> => {
   const out: Record<string, string> = {};
@@ -37,8 +38,10 @@ const tryParse = (b: Buffer): unknown => {
 const turnHash = (b: Buffer): string =>
   createHash("sha1").update(b.subarray(0, 2048)).digest("hex").slice(0, 12);
 
-const blockEventFor = (action: string, reason: string): EventType =>
-  action === "halt" ? "budget_exhausted" : (reason as EventType);
+const blockEventFor = (reason: string): EventType => {
+  if (reason === "budget_exhausted" || reason === "loop_detected") return reason;
+  return "halted";
+};
 
 export function createProxy(o: ProxyOpts): http.Server {
   const upstream = new URL(o.upstream);
@@ -55,25 +58,29 @@ export function createProxy(o: ProxyOpts): http.Server {
 
       const decision = o.kernel.admit(ctx, 0);
       if (!decision.allow) {
-        o.log.append({
-          type: blockEventFor(decision.action, decision.reason),
+        const ev: Event = {
+          type: blockEventFor(decision.reason),
           ts: Date.now(),
           run: ctx.run,
           agent: ctx.agent,
           detail: { turn: ctx.turn, hash, reason: decision.reason },
-        });
+        };
+        o.log.append(ev);
+        o.kernel.observe(ev);
         res.writeHead(decision.action === "halt" ? 429 : 409, { "content-type": "application/json" });
-        res.end(JSON.stringify({ error: { code: decision.reason, message: `aegis-mind: ${decision.reason}` } }));
+        res.end(JSON.stringify({ error: { code: ev.type, message: `aegis-mind: ${decision.reason}` } }));
         return;
       }
 
-      o.log.append({
+      const fwdEv: Event = {
         type: "call_fwd",
         ts: Date.now(),
         run: ctx.run,
         agent: ctx.agent,
         detail: { hash, turn: ctx.turn },
-      });
+      };
+      o.log.append(fwdEv);
+      o.kernel.observe(fwdEv);
 
       const fwd = http.request(
         {
@@ -95,8 +102,12 @@ export function createProxy(o: ProxyOpts): http.Server {
           });
           res.writeHead(up.statusCode ?? 502, up.headers);
           up.pipe(res);
+          up.on("error", () => res.destroy());
         }
       );
+
+      res.on("close", () => fwd.destroy());
+      fwd.setTimeout(UPSTREAM_TIMEOUT_MS, () => fwd.destroy(new Error("upstream timeout")));
 
       fwd.on("error", (err) => {
         const ev: Event = {
