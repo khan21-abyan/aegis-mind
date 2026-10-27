@@ -1,0 +1,3 @@
+export const AEGIS_LICENSE_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEA5Ht6Ir0zOivQs9KkveNorjHdM7J/ZcWm+WxDRoLkNFQ=
+-----END PUBLIC KEY-----`;
