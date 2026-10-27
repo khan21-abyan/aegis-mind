@@ -13,8 +13,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@aegis-mind/core": "0.1.0",
-    "aegis-mind": "file:../../AppData/Local/Temp/opencode/aegis-mind-1.0.0.tgz"
+    "@aegis-mind/core": "0.1.0"
   },
   "bundleDependencies": [
     "@aegis-mind/core"
