@@ -1,4 +1,5 @@
 import http from "node:http";
+import https from "node:https";
 import { createHash } from "node:crypto";
 import { Kernel } from "./kernel.js";
 import { Heal } from "./healing.js";
@@ -82,7 +83,8 @@ export function createProxy(o: ProxyOpts): http.Server {
       o.log.append(fwdEv);
       o.kernel.observe(fwdEv);
 
-      const fwd = http.request(
+      const transport = upstream.protocol === "https:" ? https : http;
+      const fwd = transport.request(
         {
           protocol: upstream.protocol,
           hostname: upstream.hostname,

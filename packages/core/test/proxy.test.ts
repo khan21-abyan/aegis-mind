@@ -26,9 +26,9 @@ afterAll(() => {
 
 describe("proxy", () => {
   const proxies: http.Server[] = [];
-  const launchProxy = (kernel: Kernel): string => {
+  const launchProxy = (kernel: Kernel, upstream?: string): string => {
     const p = createProxy({
-      upstream: `http://127.0.0.1:${stubPort}`,
+      upstream: upstream ?? `http://127.0.0.1:${stubPort}`,
       kernel,
       heal: new Heal({ failovers: [] }),
       log,
@@ -45,6 +45,14 @@ describe("proxy", () => {
 
   const post = (url: string, body: Record<string, unknown>) =>
     fetch(url, { method: "POST", body: JSON.stringify(body) });
+
+  it("surfaces an https upstream failure as 502 model_error instead of crashing (https transport selected)", async () => {
+    const url = launchProxy(new Kernel({ budgetCap: 100 }), "https://127.0.0.1:9");
+    const out = await post(url, { messages: [{ role: "user", content: "hi" }] });
+    expect(out.status).toBe(502);
+    const body = (await out.json()) as { error: { code: string } };
+    expect(body.error.code).toBe("model_error");
+  });
 
   it("halts blocked turns with 429 budget_exhausted error shape", async () => {
     const url = launchProxy(new Kernel({ budgetCap: 0 }));

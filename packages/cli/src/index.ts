@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { CheckpointLog, createDashboard, createProxy, Heal, Kernel } from "../../core/src/index.js";
-import type { Event } from "../../core/src/index.js";
+import { CheckpointLog, createDashboard, createProxy, Heal, Kernel } from "@aegis-mind/core";
+import type { Event } from "@aegis-mind/core";
 import { AEGIS_LICENSE_PUBLIC_KEY } from "./keys.js";
 import { parseLicense } from "./license.js";
 

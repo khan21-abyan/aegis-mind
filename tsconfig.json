@@ -41,5 +41,11 @@
     "skipLibCheck": true,
 
     "moduleResolution": "nodenext",
+
+    // Workspace source mapping so `tsc --noEmit` typechecks from source
+    // (package builds override this to resolve via node_modules -> dist).
+    "paths": {
+      "@aegis-mind/core": ["./packages/core/src/index.ts"]
+    },
   }
 }

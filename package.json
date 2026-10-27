@@ -1,14 +1,27 @@
 {
   "name": "aegis-mind",
   "version": "1.0.0",
-  "description": "",
+  "description": "Local, zero-cloud supervisor kernel (proxy + governance + self-healing + checkpoints + dashboard) for autonomous AI agents.",
+  "bin": {
+    "aegis-mind": "packages/cli/dist/index.js"
+  },
   "scripts": {
+    "build": "tsc -p packages/core/tsconfig.json && tsc -p packages/cli/tsconfig.json",
     "test": "vitest run"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "ai-agents",
+    "llm-proxy",
+    "self-healing",
+    "governance",
+    "local-first"
+  ],
+  "author": "Aegis Mind",
+  "license": "MIT",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@types/node": "^22.20.5",
     "tsx": "^4.23.15",
