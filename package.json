@@ -5,8 +5,23 @@
   "bin": {
     "aegis-mind": "packages/cli/dist/index.js"
   },
+  "files": [
+    "packages/cli/dist",
+    "packages/cli/LICENSE",
+    "README.md",
+    "PRICING.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@aegis-mind/core": "0.1.0",
+    "aegis-mind": "file:../../AppData/Local/Temp/opencode/aegis-mind-1.0.0.tgz"
+  },
+  "bundleDependencies": [
+    "@aegis-mind/core"
+  ],
   "scripts": {
     "build": "tsc -p packages/core/tsconfig.json && tsc -p packages/cli/tsconfig.json",
+    "prepack": "npm run build",
     "test": "vitest run"
   },
   "keywords": [
