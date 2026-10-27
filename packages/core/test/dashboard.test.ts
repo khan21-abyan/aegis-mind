@@ -55,4 +55,23 @@ describe("dashboard", () => {
     }
     expect(acc).toContain("turn_started");
   });
+
+  it("does not accumulate log.em listeners across create/close cycles", async () => {
+    dir = mkdtempSync(join(tmpdir(), "aegis-dash-"));
+    const log = CheckpointLog.open(dir);
+    const before = log.em.listenerCount("event");
+
+    const s1 = createDashboard({ log, port: 0 });
+    await once(s1, "listening");
+    expect(log.em.listenerCount("event")).toBe(before + 1);
+    s1.closeAllConnections();
+    s1.close();
+    await once(s1, "close");
+    expect(log.em.listenerCount("event")).toBe(before);
+
+    const s2 = createDashboard({ log, port: 0 });
+    await once(s2, "listening");
+    expect(log.em.listenerCount("event")).toBe(before + 1);
+    server = s2; // afterEach closes and re-asserts teardown through the helper path
+  });
 });
