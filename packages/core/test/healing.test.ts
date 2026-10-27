@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { Heal } from "../src/healing.js";
-const E = (type: string, detail: Record<string, unknown> = {}) =>
-  ({ type, ts: Date.now(), run: "r", detail } as const);
+import { Event, EventType } from "../src/types.js";
+const E = (type: EventType, detail: Record<string, unknown> = {}): Event =>
+  ({ type, ts: Date.now(), run: "r", detail });
 
 describe("Heal", () => {
   it("backs off exponentially on rate limits", () => {
