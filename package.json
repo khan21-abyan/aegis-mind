@@ -1,0 +1,19 @@
+{
+  "name": "aegis-mind",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.9"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true
+  }
+}
