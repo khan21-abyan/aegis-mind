@@ -74,7 +74,9 @@ const main = (): void => {
 
   const proxy = createProxy({ upstream: args.upstream, kernel, heal, log, beacon: [] });
   const dash = createDashboard({ log, port: args.dash });
-  proxy.listen(args.port);
+  // Loopback-only: the proxy fronts the agent's API traffic and must never
+  // be reachable from beyond this machine.
+  proxy.listen(args.port, "127.0.0.1");
 
   console.log("AEGIS MIND online. Ctrl+C to stop.");
   let closing = false;

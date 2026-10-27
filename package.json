@@ -1,7 +1,7 @@
 {
   "name": "aegis-mind",
   "version": "1.0.0",
-  "description": "Local, zero-cloud supervisor kernel (proxy + governance + self-healing + checkpoints + dashboard) for autonomous AI agents.",
+  "description": "Local, zero-cloud supervisor kernel (proxy + governance + healing policies + checkpoints + dashboard) for autonomous AI agents.",
   "bin": {
     "aegis-mind": "packages/cli/dist/index.js"
   },
@@ -26,7 +26,7 @@
   "keywords": [
     "ai-agents",
     "llm-proxy",
-    "self-healing",
+    "healing-policies",
     "governance",
     "local-first"
   ],

@@ -95,6 +95,8 @@ export function createDashboard({ log, port = 4343 }: DashboardOptions): Server 
     log.em.removeListener("event", onHistory);
   });
 
-  server.listen(port);
+  // Loopback-only bind: the dashboard streams run telemetry to localhost,
+  // so it must never be reachable from the LAN (default was all interfaces).
+  server.listen(port, "127.0.0.1");
   return server;
 }

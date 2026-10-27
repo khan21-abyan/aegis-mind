@@ -5,7 +5,7 @@
 ## Title options
 
 1. Your agent died at 03:41 making its 14,000th API call. Mine didn't — and I can prove it in 60 seconds.
-2. I built a local "supervisor kernel" that halts runaway agents on budget and self-heals them through API outages. MIT core, zero cloud.
+2. I built a local "supervisor kernel" that halts runaway agents on budget and prescribes the recovery through API outages. MIT core, zero cloud.
 
 ## Body
 
@@ -17,13 +17,13 @@ What it does, concretely:
 
 - **Halts on budget.** Set a spend cap; the kernel returns 429 and stops the run instead of letting it burn.
 - **Halts on loops.** Hashes recent turns; identical payloads repeated inside a window get caught and blocked.
-- **Self-heals.** Upstream 502s/timeouts become retryable events with backoff; the run recovers instead of dying.
+- **Prescribes the heal.** Upstream 502s/timeouts are classified by the kernel; it prescribes retry with backoff (Pro: failover chains) and your agent's client loop executes it — the run recovers instead of dying.
 - **Time-travel checkpoints.** Every run is journaled to disk; snapshot and restore any point.
 - **Live "brain" dashboard.** An SSE dashboard streams every forward, error, heal, and halt as it happens.
 
 Everything is 100% local. No telemetry, no account, no phoning home — the only network traffic is the LLM calls you're already making, now through the proxy.
 
-The core (kernel, healing, checkpoints, proxy, single-agent dashboard) is MIT. There's a paid Pro tier for multi-agent supervision and model failover chains — the license is a signed file verified offline.
+The core (kernel, healing, checkpoints, proxy, single-agent dashboard) is MIT. There's a paid Pro tier for multi-model failover chains config — the license is a signed file verified offline.
 
 Install:
 

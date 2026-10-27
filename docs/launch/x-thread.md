@@ -8,7 +8,7 @@ Your agent died at 03:41 making its 14,000th API call.
 
 Mine didn't — and I can prove it in 60 seconds.
 
-Aegis Mind: a local supervisor kernel that halts runaway agents and self-heals them through outages.
+Aegis Mind: a local supervisor kernel that halts runaway agents and prescribes the recovery through outages.
 
 Thread 🧵
 
@@ -20,13 +20,11 @@ Every API call your agent makes passes through a local proxy. Set a budget cap �
 
 Overnight runs stop being a blank check.
 
-## Tweet 3 — self-healing
+## Tweet 3 — failure recovery
 
-2/ Self-healing.
+2/ Failure recovery.
 
-Upstream 502 or timeout? The kernel logs a model_error, the heal policy retries with backoff, and the run recovers — instead of dying at turn 14,000.
-
-Watch it recover in the GIF. Green again in seconds.
+Upstream 502 or timeout? The kernel logs a model_error and prescribes the heal policy — retry with backoff. Your agent's client loop executes it, `recovered` streams live. Instead of dying at turn 14,000, the run comes back green.
 
 ## Tweet 4 — time-travel
 
@@ -60,7 +58,7 @@ MIT core: github link in bio/repo.
 
 Core (kernel, healing, checkpoints, proxy, dashboard) = free, MIT.
 
-Pro ($29, multi-agent supervision + failover chains) = a signed license file verified OFFLINE on your machine.
+Pro ($29, multi-model failover chains) = a signed license file verified OFFLINE on your machine.
 
 No license server. No phoning home. Ever.
 

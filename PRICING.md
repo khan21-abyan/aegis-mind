@@ -14,10 +14,7 @@ Everything in `packages/core`, forever free under the MIT license:
 
 For agents you run unattended:
 
-- Multi-agent supervision (several runs, one kernel)
-- Model failover chains (auto-failover across models mid-run)
-- Dashboard Pro panels (spend curves, failover timelines, halt forensics)
-- Priority policies (failover-first healing, custom budgets per run)
+- Multi-model failover chains config (`AEGIS_FAILOVERS` — the heal policy prescribes failover-first actions across your models; your client loop executes them)
 
 ## The honest line
 

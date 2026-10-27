@@ -20,7 +20,7 @@ const RETRY_WAIT_BUDGET_MS = 25; // policy waitMs honored up to a small test bud
 const sleep = (ms: number): Promise<void> =>
   ms > 0 ? new Promise((r) => setTimeout(r, ms)) : Promise.resolve();
 
-describe("e2e: upstream dies, run self-heals, dashboard sees it, checkpoint restores", () => {
+describe("e2e: upstream dies, kernel-heal policy + client loop recover, dashboard sees it, checkpoint restores", () => {
   let stub: http.Server | undefined;
   let proxy: http.Server | undefined;
   let dash: http.Server | undefined;

@@ -1,6 +1,6 @@
 # Show HN post
 
-> Title: `Show HN: Aegis Mind – a local supervisor kernel that halts and self-heals AI agents`
+> Title: `Show HN: Aegis Mind – a local supervisor kernel that halts runaway AI agents and prescribes their recovery`
 >
 > First comment (the launch comment) below. Keep the title factual; HN punishes hype.
 
@@ -14,13 +14,13 @@ What the kernel does:
 
 - Budget halt: set a spend cap, the kernel answers 429 and the run stops instead of burning money overnight.
 - Loop detection: recent turns are hashed; repeated identical payloads inside a window get blocked.
-- Self-healing: upstream failures become retryable events with backoff, so a transient outage doesn't kill a long run.
+- Prescriptive healing: upstream failures are classified by the kernel, which prescribes the heal — retry with backoff, failover when Pro chains are configured. Your agent's client loop executes it; a transient outage doesn't kill a long run, and `recovered` is journaled.
 - Checkpoints: the full event journal lands on disk; snapshot and restore a run to any point (time travel).
 - Dashboard: an SSE "brain" view streaming every forward, error, heal, and halt live.
 
 Design constraints I held to: Node >= 20, only node:http/node:crypto/node:fs/node:path, zero runtime dependencies in the core package, and zero cloud — no telemetry, no license server, no phoning home. The only network traffic is the LLM traffic you're proxying anyway.
 
-Open core: the kernel/healing/checkpoints/proxy/dashboard core is MIT. A Pro tier ($29, offline-verified signed license) adds multi-agent supervision and model failover chains.
+Open core: the kernel/healing/checkpoints/proxy/dashboard core is MIT. A Pro tier ($29, offline-verified signed license) adds multi-model failover chains config.
 
 Install: `npx aegis-mind`
 

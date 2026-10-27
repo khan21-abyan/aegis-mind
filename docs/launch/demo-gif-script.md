@@ -14,13 +14,13 @@
 | 6 | 0:30–0:36 | Heal policy waits, client retries | `retrying with backoff…` | Retry visible in event stream; wait tick between attempts |
 | 7 | 0:36–0:44 | Restart stub upstream; retry succeeds | `recovered ✓` | `recovered` event, dashboard row flips green, agent gets 200 |
 | 8 | 0:44–0:52 | Let spend hit the budget cap mid-run | `budget halt — stopped` | Kernel returns 429; dashboard shows `budget_exhausted`; run ends, not dies |
-| 9 | 0:52–0:58 | Restore a checkpoint from earlier in the journal | `restore checkpoint #n` | CLI/dashboard shows restore output; state back at earlier turn |
+| 9 | 0:52–0:58 | Show the journal: `code .aegis/` in VS Code | `the journal — every decision` | `events.jsonl` tail + `snap-N.json` snapshot files visible |
 | 10 | 0:58–1:00 | End card hold | `aegis-mind · npx aegis-mind` | Logo/banner + install one-liner, 2s hold |
 
 ## Production notes
 
 - Kill/restart the stub upstream from a second terminal that stays visible in frame for panels 4–7.
 - Panel 8 needs a low `AEGIS_BUDGET` so the halt happens naturally on camera — do not fake the 429.
-- Panel 9 uses a real `checkpoint` snapshot taken earlier in the same run; show the actual restore output.
+- Panel 9 shows the real journal on disk: `code .aegis/` — tail `events.jsonl` and the `snap-N.json` snapshots taken earlier in the run are plainly visible; nothing to fake and nothing shipped-but-undocumented is implied.
 - If a panel misbehaves, re-record the whole take; do not splice in staged output.
 - Total must stay ≤ 60s: if over, tighten holds on panels 2 and 10 first.
