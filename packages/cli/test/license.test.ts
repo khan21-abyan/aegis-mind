@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { generateKeyPairSync, sign, createVerify } from "node:crypto";
 import { parseLicense, sealLicense } from "../src/license.js";
+import { AEGIS_LICENSE_PUBLIC_KEY } from "../src/keys.js";
 
 const { privateKey, publicKey } = generateKeyPairSync("ed25519");
 const PUB = publicKey.export({ type: "spki", format: "pem" }).toString();
@@ -53,5 +54,12 @@ describe("parseLicense", () => {
     const txt = sealLicense({ scope: "core", issued: payload.issued, email: payload.email }, privateKey);
     const lic = parseLicense(txt, PUB);
     expect(lic?.scope).toBe("core");
+  });
+
+  it("returns null without expectedPublicKey when signed by a different key (default-key verify path)", () => {
+    const other = generateKeyPairSync("ed25519");
+    const forged = sealLicense(payload, other.privateKey);
+    expect(parseLicense(forged)).toBeNull();
+    expect(parseLicense(`${forged.split("\n")[0]}\nnot-a-signature`)).toBeNull();
   });
 });

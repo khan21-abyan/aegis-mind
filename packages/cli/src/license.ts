@@ -1,6 +1,7 @@
-import { sign, verify, createPrivateKey, createPublicKey } from "node:crypto";
+import { sign, verify, createPublicKey } from "node:crypto";
 
 import type { KeyObject } from "node:crypto";
+import { AEGIS_LICENSE_PUBLIC_KEY } from "./keys.js";
 
 export interface License {
   scope: "core" | "pro";
@@ -36,13 +37,12 @@ export function parseLicense(txt: string, expectedPublicKey?: string): License |
     return null;
   }
   if (!isLicenseShape(payload)) return null;
-  if (expectedPublicKey === undefined) return payload;
   let ok: boolean;
   try {
     ok = verify(
       null,
       Buffer.from(payloadB64, "utf8"),
-      createPublicKey(expectedPublicKey),
+      createPublicKey(expectedPublicKey ?? AEGIS_LICENSE_PUBLIC_KEY),
       Buffer.from(sigB64, "base64"),
     );
   } catch {

@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import http from "node:http";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { CheckpointLog, createDashboard, createProxy, Heal, Kernel } from "../../core/src/index.js";
@@ -13,24 +12,52 @@ interface Args {
   upstream: string;
 }
 
+const USAGE = `Usage: aegis-mind [--port <1-65535>] [--dash <1-65535>] [--upstream <url>]
+
+Env:
+  AEGIS_BUDGET      spend cap (default: unlimited)
+  AEGIS_FAILOVERS   comma-separated failover models (Pro license required)
+  AEGIS_LICENSE     path to license file (default: ./.aegis/license.txt)`;
+
+const isPort = (v: string): boolean => {
+  const n = Number(v);
+  return Number.isInteger(n) && n >= 1 && n <= 65535;
+};
+
+class CliError extends Error {}
+
 const parseArgs = (argv: string[]): Args => {
   const out: Args = { port: 4242, dash: 4343, upstream: "https://api.openai.com" };
   for (let i = 0; i < argv.length; i++) {
+    const flag = String(argv[i]);
     const next = (): string => {
       const v = argv[i + 1];
-      if (v === undefined) throw new Error(`missing value for ${String(argv[i])}`);
+      if (v === undefined) throw new CliError(`missing value for ${flag}`);
       i += 1;
       return v;
     };
-    if (argv[i] === "--port") out.port = Number(next());
-    else if (argv[i] === "--dash") out.dash = Number(next());
-    else if (argv[i] === "--upstream") out.upstream = next();
+    if (flag === "--port" || flag === "--dash") {
+      const v = next();
+      if (!isPort(v)) throw new CliError(`${flag} expects an integer between 1 and 65535, got "${v}"`);
+      if (flag === "--port") out.port = Number(v);
+      else out.dash = Number(v);
+    } else if (flag === "--upstream") {
+      out.upstream = next();
+    } else {
+      console.warn(`aegis-mind: warning: unknown flag ${flag} — ignored`);
+    }
   }
   return out;
 };
 
+const licensePath = (): string => {
+  const env = process.env["AEGIS_LICENSE"];
+  if (env !== undefined && env !== "") return env;
+  return join(process.cwd(), ".aegis", "license.txt");
+};
+
 const detectPro = (): boolean => {
-  const p = join(process.cwd(), ".aegis", "license.txt");
+  const p = licensePath();
   if (!existsSync(p)) return false;
   try {
     return parseLicense(readFileSync(p, "utf8"), AEGIS_LICENSE_PUBLIC_KEY)?.scope === "pro";
@@ -40,7 +67,14 @@ const detectPro = (): boolean => {
 };
 
 const main = (): void => {
-  const args = parseArgs(process.argv.slice(2));
+  let args: Args;
+  try {
+    args = parseArgs(process.argv.slice(2));
+  } catch (e) {
+    console.error(`aegis-mind: ${e instanceof Error ? e.message : String(e)}`);
+    console.error(USAGE);
+    process.exit(1);
+  }
   const pro = detectPro();
 
   const budgetEnv = process.env["AEGIS_BUDGET"];
@@ -66,6 +100,8 @@ const main = (): void => {
     `  proxy  http://localhost:${args.port}  →  ${args.upstream}`,
     `  dash   http://localhost:${args.dash}`,
     `  mode   ${pro ? "PRO (failovers enabled)" : "free (core governance only)"}`,
+    "",
+    "  Ctrl+C to stop. Full usage: --help flags documented in README.",
     "",
   ].join("\n");
   console.log(banner);
