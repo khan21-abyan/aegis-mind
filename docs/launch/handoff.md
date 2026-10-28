@@ -1,6 +1,6 @@
 # Aegis Mind — Launch Handoff (human passes only)
 
-Repo: https://github.com/khan21-abyan/aegis-mind (public; local clone `aegis-mind/`). `master` is pushed through commit `7deca23`; git tag `v0.1.0` is also pushed. Root npm package metadata is `aegis-mind@1.0.0` (note the tag/package-version mismatch; do not describe the tag as npm version 0.1.0). Verified: 27/27 tests, strict tsc, npm pack includes bundled core, clean tarball install resolves the CLI and bundled core.
+Repo: https://github.com/khan21-abyan/aegis-mind (public; local clone `aegis-mind/`). The remote is pushed through `7deca23`, with legacy tag `v0.1.0`. Root npm package metadata is `aegis-mind@1.0.0`; the release tag should be `v1.0.0` (do not move or delete the existing tag). Verified: 27/27 tests, strict tsc, npm pack includes bundled core, clean tarball install resolves the CLI and bundled core.
 
 ## Assets you own but must protect
 - Signing private key: `C:\Users\abuhu\.aegis-keys\private.pem` — **back this up NOW** (copy to a second private location). Losing it means the pubkey baked into the shipped CLI mismatches and NOBODY can be issued a Pro license (regenerating = re-shipping a CLI). If leaked, roll: new pair, one-line change in `packages/cli/src/keys.ts`, rebuild, re-publish.
@@ -10,7 +10,7 @@ Repo: https://github.com/khan21-abyan/aegis-mind (public; local clone `aegis-min
 ## Step-by-step (in this exact order)
 
 1. **GitHub is already published.** The public project is https://github.com/khan21-abyan/aegis-mind. Do not create another repository. The empty duplicate `techmissionofficial/aegis-mind` was created during auth troubleshooting; it is not the launch repo and can be deleted by its owner.
-2. **npm account** → sign in to npm in a terminal (`npm login`, with your own 2FA) inside `aegis-mind/`. Before publishing, decide on a matching release version/tag: package is `1.0.0`, existing git tag is `v0.1.0`. Registry checks at handoff time found both `aegis-mind@1.0.0` and `@aegis-mind/core@0.1.0` unclaimed. `npm pack --dry-run` verified root `aegis-mind@1.0.0` and bundled `@aegis-mind/core`; a clean temp install of the tarball succeeded. Publish only after reviewing that versioning mismatch and ownership; do not separately publish core unless intentionally choosing to support it as its own public package. Publish command after that decision: `npm publish --access public`.
+2. **npm account** → sign in to npm in a terminal (`npm login`, with your own 2FA) inside `aegis-mind/`. `npm view` found both `aegis-mind@1.0.0` and `@aegis-mind/core@0.1.0` unclaimed at the last check. `npm pack --dry-run` verified root `aegis-mind@1.0.0` and bundled `@aegis-mind/core`; a clean temp install of the tarball succeeded. After reviewing account/ownership and creating the `v1.0.0` GitHub release tag, publish the root package with `npm publish --access public`. Do not separately publish core unless intentionally supporting it as its own public package.
 3. **Gumroad account** → product "Aegis Mind Pro License Key", $29. Fulfillment = run:
    `node tools/mint-license.mjs --private C:/Users/abuhu/.aegis-keys/private.pem --email <buyer> --plan pro --print`
    and paste the 2 base64 lines into Gumroad's delivery message with install instructions. Consider a tiny `IMPORTANT: delivery is a license file — save as .aegis/license.txt` paste-in.
@@ -30,4 +30,4 @@ Repo: https://github.com/khan21-abyan/aegis-mind (public; local clone `aegis-min
 ## Unfinished-but-blocking-nothing
 - Demo GIF: script is filmable (`docs/launch/demo-gif-script.md`, ≤60s) — you film it with the CLI on this machine; I can drive the screen if asked.
 - `--help` flag currently falls through to boot (cosmetic; warn-continue is the behavior).
-- Package/GitHub version alignment: root package is 1.0.0, but existing tag is v0.1.0. Pick the canonical release version and publish a matching new tag before announcing a release.
+- `v1.0.0` release tag needs to be pushed to GitHub; keep the existing legacy `v0.1.0` tag unchanged.
