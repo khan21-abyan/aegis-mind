@@ -1,6 +1,6 @@
 # Aegis Mind
 
-Your agents die at night. Aegis Mind guarantees they survive. It is a local supervisor kernel that sits between your autonomous agent and its model API: a governance kernel halts runaway runs on budget, a healing engine classifies failures and prescribes retry/failover policies that your agent's client loop executes, time-travel checkpoints let you restore any run to any moment, and a live "brain" dashboard streams every decision as it happens — 100% on your machine, 100% open core.
+Aegis Mind helps keep autonomous agent runs observable and bounded. It is a local supervisor kernel that sits between your agent and its model API: a governance kernel halts runs on configured budget limits and detected loops, a healing engine classifies failures and prescribes retry/failover policies that your agent's client loop executes, time-travel checkpoints let you restore recorded state, and a live dashboard streams decisions as they happen — on your machine, with an MIT-licensed core.
 
 ## Quickstart
 
@@ -24,7 +24,7 @@ Useful flags: `--port <n>` (proxy, default 4242), `--dash <n>` (dashboard, defau
 - **Zero-cloud** — no telemetry, no license ping, no phoning home, ever. The only network traffic is the LLM calls you proxy.
 - **Governance kernel** — budget caps and loop detection halt a run before it becomes an invoice.
 - **Healing (prescriptive)** — the kernel classifies each failure and prescribes the heal: retry with backoff by default, failover when Pro chains are configured. Your agent's client loop executes the policies; `recovered` is journaled and streamed. No automatic server-side retry ships.
-- **Time-travel checkpoints** — every run is journaled; snapshot and restore any point.
+- **Checkpoint snapshots** — events are journaled; integrations can explicitly snapshot supplied state and restore a recorded snapshot. Hidden agent state is not captured automatically.
 - **Live brain dashboard** — SSE-streamed view of every forward, error, heal, and halt.
 - **MIT core + Pro** — `packages/core` is MIT-licensed; the CLI bundles the proxy + dashboard and gates Pro surfaces on an offline Ed25519 license. See [PRICING.md](PRICING.md).
 

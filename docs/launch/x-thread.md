@@ -30,9 +30,9 @@ Upstream 502 or timeout? The kernel logs a model_error and prescribes the heal p
 
 3/ Time-travel checkpoints.
 
-Every run is journaled to disk. Snapshot any moment, restore any moment.
+Checkpoint state snapshots are saved locally when your integration creates them. Restore one of those recorded snapshots through the checkpoint API.
 
-Broke at turn 40? Go back to turn 12 with full state. Debugging agents finally feels like debugging programs.
+Pass the state you need to snapshot; Aegis Mind doesn't capture or rewind hidden agent state automatically. Debugging agents gets a durable local checkpoint log.
 
 ## Tweet 5 — dashboard
 

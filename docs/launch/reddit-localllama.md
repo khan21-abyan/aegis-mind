@@ -18,7 +18,7 @@ What it does, concretely:
 - **Halts on budget.** Set a spend cap; the kernel returns 429 and stops the run instead of letting it burn.
 - **Halts on loops.** Hashes recent turns; identical payloads repeated inside a window get caught and blocked.
 - **Prescribes the heal.** Upstream 502s/timeouts are classified by the kernel; it prescribes retry with backoff (Pro: failover chains) and your agent's client loop executes it — the run recovers instead of dying.
-- **Time-travel checkpoints.** Every run is journaled to disk; snapshot and restore any point.
+- **Checkpoint snapshots.** Events are journaled to disk; integrations can explicitly snapshot supplied state and restore a recorded snapshot. Hidden agent state is not captured automatically.
 - **Live "brain" dashboard.** An SSE dashboard streams every forward, error, heal, and halt as it happens.
 
 Everything is 100% local. No telemetry, no account, no phoning home — the only network traffic is the LLM calls you're already making, now through the proxy.
