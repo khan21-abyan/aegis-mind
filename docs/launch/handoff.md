@@ -9,7 +9,7 @@ Repo: https://github.com/khan21-abyan/aegis-mind (public; local clone `aegis-min
 
 ## Step-by-step (in this exact order)
 
-1. **GitHub is already published.** The public project is https://github.com/khan21-abyan/aegis-mind. Do not create another repository. The empty duplicate `techmissionofficial/aegis-mind` was created during auth troubleshooting; it is not the launch repo and can be deleted by its owner.
+1. **GitHub is already published.** The public project is https://github.com/khan21-abyan/aegis-mind. Do not create another repository. The empty duplicate `techmissionofficial/aegis-mind` was created during auth troubleshooting; it is not the launch repo and can be deleted by its owner. The local clone has four extra commits and a local `v1.0.0` tag; from PowerShell in the `aegis-mind` folder, run `git push origin master` then `git push origin v1.0.0`. Git Credential Manager will authenticate in your browser; approve the prompt as the repo owner. Never paste a PAT into chat.
 2. **npm account** → sign in to npm in a terminal (`npm login`, with your own 2FA) inside `aegis-mind/`. `npm view` found both `aegis-mind@1.0.0` and `@aegis-mind/core@0.1.0` unclaimed at the last check. `npm pack --dry-run` verified root `aegis-mind@1.0.0` and bundled `@aegis-mind/core`; a clean temp install of the tarball succeeded. After reviewing account/ownership and creating the `v1.0.0` GitHub release tag, publish the root package with `npm publish --access public`. Do not separately publish core unless intentionally supporting it as its own public package.
 3. **Gumroad account** → product "Aegis Mind Pro License Key", $29. Fulfillment = run:
    `node tools/mint-license.mjs --private C:/Users/abuhu/.aegis-keys/private.pem --email <buyer> --plan pro --print`
