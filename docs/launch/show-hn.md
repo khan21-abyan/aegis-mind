@@ -22,7 +22,7 @@ Design constraints I held to: Node >= 20, only node:http/node:crypto/node:fs/nod
 
 Open core: the kernel/healing/checkpoints/proxy/dashboard core is MIT. A Pro tier ($29, offline-verified signed license) adds multi-model failover chains config.
 
-Install: `npx aegis-mind`
+Install: `npx @abyan/aegis-mind`
 
 Repo: [link]. Happy to answer questions about the kernel design, the healing policy model, or why I refuse to add a license server.
 

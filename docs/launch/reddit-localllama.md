@@ -28,7 +28,7 @@ The core (kernel, healing, checkpoints, proxy, single-agent dashboard) is MIT. T
 Install:
 
 ```sh
-npx aegis-mind
+npx @abyan/aegis-mind
 ```
 
 Node >= 20. Repo and the demo GIF in the comments — I'll be here answering questions.

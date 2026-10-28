@@ -5,7 +5,7 @@ Aegis Mind helps keep autonomous agent runs observable and bounded. It is a loca
 ## Quickstart
 
 ```sh
-npx aegis-mind
+npx @abyan/aegis-mind
 ```
 
 ## Pro license

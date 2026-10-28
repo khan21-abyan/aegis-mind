@@ -13,5 +13,5 @@ The license does not add automatic server-side retries. Your agent's client loop
 ## Requirements
 
 - Node.js 20 or later
-- Aegis Mind CLI installed with `npx aegis-mind`
+- Aegis Mind CLI installed with `npx @abyan/aegis-mind`
 - OpenAI-compatible upstream API configured for your agent

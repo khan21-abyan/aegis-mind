@@ -6,7 +6,7 @@
 
 | # | Time | Action | On-screen text | Expected visual |
 |---|------|--------|----------------|-----------------|
-| 1 | 0:00–0:04 | Type `npx aegis-mind` in a clean terminal and hit enter | `npx aegis-mind` | Bare prompt; command typed; enter |
+| 1 | 0:00–0:04 | Type `npx @abyan/aegis-mind` in a clean terminal and hit enter | `npx @abyan/aegis-mind` | Bare prompt; command typed; enter |
 | 2 | 0:04–0:10 | Banner prints; hold | `AEGIS MIND online` | ASCII banner, proxy `:4242`, dash `:4343`, mode line |
 | 3 | 0:10–0:18 | Open dashboard in browser, let an agent run a few turns | `your agent's brain, live` | Dashboard pulsing: events streaming in, turns ticking up |
 | 4 | 0:18–0:24 | Kill the stub upstream process (Ctrl+C in its terminal) | `upstream killed` | Upstream terminal shows interrupt; dashboard still live |
@@ -15,7 +15,7 @@
 | 7 | 0:36–0:44 | Restart stub upstream; retry succeeds | `recovered ✓` | `recovered` event, dashboard row flips green, agent gets 200 |
 | 8 | 0:44–0:52 | Let spend hit the budget cap mid-run | `budget halt — stopped` | Kernel returns 429; dashboard shows `budget_exhausted`; run ends, not dies |
 | 9 | 0:52–0:58 | Show the journal: `code .aegis/` in VS Code | `the journal — every decision` | `events.jsonl` tail + `snap-N.json` snapshot files visible |
-| 10 | 0:58–1:00 | End card hold | `aegis-mind · npx aegis-mind` | Logo/banner + install one-liner, 2s hold |
+| 10 | 0:58–1:00 | End card hold | `aegis-mind · npx @abyan/aegis-mind` | Logo/banner + install one-liner, 2s hold |
 
 ## Production notes
 

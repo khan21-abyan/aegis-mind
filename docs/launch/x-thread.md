@@ -46,7 +46,7 @@ You finally SEE what your agent is doing at 3am instead of guessing from the inv
 
 5/ Install is one line:
 
-npx aegis-mind
+npx @abyan/aegis-mind
 
 Node 20+. 100% local: no telemetry, no account, no phoning home. The only traffic through it is the LLM calls you were making anyway.
 

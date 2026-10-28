@@ -1,5 +1,5 @@
 {
-  "name": "aegis-mind",
+  "name": "@abyan/aegis-mind",
   "version": "1.0.0",
   "description": "Local, zero-cloud supervisor kernel (proxy + governance + healing policies + checkpoints + dashboard) for autonomous AI agents.",
   "bin": {
