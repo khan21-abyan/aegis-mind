@@ -14,6 +14,7 @@ Repo: https://github.com/khan21-abyan/aegis-mind (public; local clone `aegis-min
 3. **Gumroad account** → product "Aegis Mind Pro License Key", $29. Fulfillment = run:
    `node tools/mint-license.mjs --private C:/Users/abuhu/.aegis-keys/private.pem --email <buyer> --plan pro --print`
    and paste the 2 base64 lines into Gumroad's delivery message with install instructions. Consider a tiny `IMPORTANT: delivery is a license file — save as .aegis/license.txt` paste-in.
+   Upload `docs/launch/pro-license-fulfillment.md` in the Gumroad product's Content tab. It is transparent that the key is manually fulfilled; do not publish or accept sales until you are ready to fulfill each order and your payout method is configured.
 4. After creating the Gumroad product, add its purchase URL to the README. This URL is not available yet.
 5. **Launch day** (pick Tue–Thu 6–8am PT): post all three prepared docs:
    - `docs/launch/show-hn.md` → news.ycombinator.com/submit (Show HN; link = GitHub repo, first line of post = the hook)
