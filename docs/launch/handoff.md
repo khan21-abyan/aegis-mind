@@ -26,6 +26,7 @@ Repo: https://github.com/khan21-abyan/aegis-mind (public; local clone `aegis-min
 - Kernel halts runs on budget/loops; events journaled to `.aegis/events.jsonl`; checkpoints restorable; SSE dashboard on 127.0.0.1 only; offline Ed25519 licenses; zero telemetry; MIT core.
 - NOT shipped (never claim): server-side auto-retry (the agent's loop executes the prescription), real token-cost accounting, multi-agent supervision, dashboard Pro panels.
 - Pro ships exactly one extra: multi-model failover chains config.
+- Before selling Pro, get a legal/positioning review: the CLI package carrying the offline Pro gate is itself MIT-licensed, so a buyer can remove the gate from their copy. Do not promise tamper-proof licensing or legal exclusivity.
 
 ## Unfinished-but-blocking-nothing
 - Demo GIF: script is filmable (`docs/launch/demo-gif-script.md`, ≤60s) — you film it with the CLI on this machine; I can drive the screen if asked.
