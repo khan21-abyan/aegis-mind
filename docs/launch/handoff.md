@@ -9,13 +9,13 @@ Repo: https://github.com/khan21-abyan/aegis-mind (public; local clone `aegis-min
 
 ## Step-by-step (in this exact order)
 
-1. **GitHub is already published.** The public project is https://github.com/khan21-abyan/aegis-mind. Do not create another repository. The empty duplicate `techmissionofficial/aegis-mind` was created during auth troubleshooting; it is not the launch repo and can be deleted by its owner. The local clone has four extra commits and a local `v1.0.0` tag; from PowerShell in the `aegis-mind` folder, run `git push origin master` then `git push origin v1.0.0`. Git Credential Manager will authenticate in your browser; approve the prompt as the repo owner. Never paste a PAT into chat.
+1. **GitHub is already published.** The public project is https://github.com/khan21-abyan/aegis-mind. The remote `master` currently includes the release-prep commits and `v1.0.0` tag. The empty duplicate `techmissionofficial/aegis-mind` was created during auth troubleshooting; it is not the launch repo and can be deleted by its owner. Never paste a PAT into chat.
 2. **npm account** → sign in to npm in a terminal (`npm login`, with your own 2FA) inside `aegis-mind/`. `npm view` found both `aegis-mind@1.0.0` and `@aegis-mind/core@0.1.0` unclaimed at the last check. `npm pack --dry-run` verified root `aegis-mind@1.0.0` and bundled `@aegis-mind/core`; a clean temp install of the tarball succeeded. After reviewing account/ownership and creating the `v1.0.0` GitHub release tag, publish the root package with `npm publish --access public`. Do not separately publish core unless intentionally supporting it as its own public package.
-3. **Gumroad draft already exists:** Aegis Mind Pro License, $29, slug `aegis-mind-pro`; draft editor: `https://gumroad.com/products/frwvl/edit`. Product is not for sale. The content tab has saved manual-fulfillment instructions (Gumroad confirmed “Changes saved!”). It explicitly says the license is issued individually after purchase and is not automatic. Fulfillment = run:
+3. **Gumroad product is live:** Aegis Mind Pro License, $29, public URL `https://abyanookhan.gumroad.com/l/frwvl`; editor: `https://gumroad.com/products/frwvl/edit`. It is live and the Content tab has saved manual-fulfillment instructions (Gumroad confirmed “Changes saved!”). The product summary and buyer content state the license is individually issued after purchase, not instant. Fulfillment = run:
    `node tools/mint-license.mjs --private C:/Users/abuhu/.aegis-keys/private.pem --email <buyer> --plan pro --print`
    and paste the 2 base64 lines into Gumroad's delivery message with install instructions. Consider a tiny `IMPORTANT: delivery is a license file — save as .aegis/license.txt` paste-in.
-   The Content tab already contains equivalent buyer instructions. You may upload `docs/launch/pro-license-fulfillment.md` there as a downloadable copy too. To make the draft sellable, first connect your payout method from the Gumroad alert link, review the product and manual fulfillment commitment, then publish it yourself. It is not for sale now.
-4. After creating the Gumroad product, add its purchase URL to the README. This URL is not available yet.
+   The Content tab already contains equivalent buyer instructions. The product is currently live; don't unpublish unless fulfillment cannot be provided. You may upload `docs/launch/pro-license-fulfillment.md` there as a downloadable copy too. Public page description editor was not populated because the rich-text editor wasn't writable through browser automation; summary and post-purchase content contain manual-fulfillment disclosure.
+4. README now links the live Gumroad URL and discloses $29 one-time plus manual delivery.
 5. **Launch day** (pick Tue–Thu 6–8am PT): post all three prepared docs:
    - `docs/launch/show-hn.md` → news.ycombinator.com/submit (Show HN; link = GitHub repo, first line of post = the hook)
    - `docs/launch/reddit-localllama.md` → r/LocalLLaMA (read sub rules; flair if needed)
@@ -32,4 +32,4 @@ Repo: https://github.com/khan21-abyan/aegis-mind (public; local clone `aegis-min
 ## Unfinished-but-blocking-nothing
 - Demo GIF: script is filmable (`docs/launch/demo-gif-script.md`, ≤60s) — you film it with the CLI on this machine; I can drive the screen if asked.
 - `--help` flag currently falls through to boot (cosmetic; warn-continue is the behavior).
-- `v1.0.0` release tag needs to be pushed to GitHub; keep the existing legacy `v0.1.0` tag unchanged.
+- GitHub release draft for tag `v1.0.0` is saved. Review and publish it yourself from the GitHub Releases page when ready.

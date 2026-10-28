@@ -8,6 +8,10 @@ Aegis Mind helps keep autonomous agent runs observable and bounded. It is a loca
 npx aegis-mind
 ```
 
+## Pro license
+
+The Pro license unlocks multi-model failover-chain configuration for **$29 one-time**. Licenses are individually signed and manually delivered after purchase; fulfillment is not instant. [Get Aegis Mind Pro on Gumroad](https://abyanookhan.gumroad.com/l/frwvl).
+
 Point your agent's OpenAI-compatible client at the proxy (`http://localhost:4242`) and open the dashboard (`http://localhost:4343`). During development, run the CLI straight from source:
 
 ```sh
