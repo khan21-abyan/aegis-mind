@@ -5,7 +5,7 @@ import { CheckpointLog, createDashboard, createProxy, Heal, Kernel } from "@aegi
 import type { Event } from "@aegis-mind/core";
 import { AEGIS_LICENSE_PUBLIC_KEY } from "./keys.js";
 import { parseLicense } from "./license.js";
-import { CliError, parseArgs, USAGE } from "./args.js";
+import { CliError, isHelpRequest, parseArgs, upstreamForTelemetry, USAGE } from "./args.js";
 import type { Args } from "./args.js";
 
 const licensePath = (): string => {
@@ -26,8 +26,13 @@ const detectPro = (): boolean => {
 
 const main = (): void => {
   let args: Args;
+  const argv = process.argv.slice(2);
+  if (isHelpRequest(argv)) {
+    console.log(USAGE);
+    return;
+  }
   try {
-    args = parseArgs(process.argv.slice(2));
+    args = parseArgs(argv);
   } catch (e) {
     console.error(`aegis-mind: ${e instanceof Error ? e.message : String(e)}`);
     console.error(USAGE);
@@ -44,7 +49,13 @@ const main = (): void => {
 
   const log = CheckpointLog.open();
   const kernel = new Kernel({ budgetCap, loopWindow: 8 });
-  const heal = new Heal({ failovers });
+  let heal: Heal;
+  try {
+    heal = new Heal({ failovers });
+  } catch (e) {
+    console.error(`aegis-mind: ${e instanceof Error ? e.message : String(e)}`);
+    process.exit(1);
+  }
 
   const banner = [
     "",
@@ -68,7 +79,7 @@ const main = (): void => {
     type: "run_started",
     ts: Date.now(),
     run: "cli",
-    detail: { mode: pro ? "pro" : "free", upstream: args.upstream },
+    detail: { mode: pro ? "pro" : "free", upstream: upstreamForTelemetry(args.upstream) },
   };
   log.append(start);
 

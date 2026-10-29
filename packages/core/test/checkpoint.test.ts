@@ -11,7 +11,6 @@ describe("CheckpointLog", () => {
       const log = CheckpointLog.open(dir);
       log.append({ type: "turn_started", ts: 1, run: "r1", detail: {} });
       const n = log.snapshot({ turn: 3, state: "half" });
-      log.append({ type: "checkpoint", ts: 2, run: "r1", detail: { snap: n } });
       expect(log.list()).toContain(n);
       expect(log.restore(n)).toEqual({ turn: 3, state: "half" });
       expect(log.replay(n).length).toBe(1);
@@ -26,8 +25,7 @@ describe("CheckpointLog", () => {
       const log = CheckpointLog.open(dir);
       appendFileSync(join(dir, ".aegis", "events.jsonl"), "not-valid-json{{\n");
       const n = log.snapshot({ turn: 1 });
-      log.append({ type: "checkpoint", ts: 1, run: "r2", detail: { snap: n } });
-      expect(log.replay(0)).toEqual([{ type: "checkpoint", ts: 1, run: "r2", detail: { snap: n } }]);
+      expect(log.replay(n)).toEqual([{ type: "checkpoint", ts: expect.any(Number), run: "default", detail: { snap: n } }]);
       expect(log.list()).toEqual([n]);
     } finally {
       rmSync(dir, { recursive: true, force: true });

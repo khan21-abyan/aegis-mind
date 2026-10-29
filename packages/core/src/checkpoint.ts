@@ -39,6 +39,12 @@ export class CheckpointLog {
     const next = n + 1;
     writeFileSync(join(this.root, "snaphead.json"), JSON.stringify({ n: next }));
     writeFileSync(this.snapFile(next), JSON.stringify({ at: Date.now(), state: obj }));
+    this.append({
+      type: "checkpoint",
+      ts: Date.now(),
+      run: "default",
+      detail: { snap: next },
+    });
     return next;
   }
 

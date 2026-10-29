@@ -1,6 +1,6 @@
 {
   "name": "@aegis-mind/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Aegis Mind CLI: local supervisor proxy + live brain dashboard for autonomous AI agents",
   "type": "module",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@aegis-mind/core": "0.1.0"
+    "@aegis-mind/core": "0.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.20.5"

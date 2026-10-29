@@ -1,6 +1,6 @@
 # Show HN post
 
-> Title: `Show HN: Aegis Mind – a local supervisor kernel that halts runaway AI agents and prescribes their recovery`
+> Title: `Show HN: Aegis Mind – a local supervisor kernel that halts runaway AI agents and recovers them through API outages`
 >
 > First comment (the launch comment) below. Keep the title factual; HN punishes hype.
 
@@ -14,13 +14,13 @@ What the kernel does:
 
 - Budget halt: set a spend cap, the kernel answers 429 and the run stops instead of burning money overnight.
 - Loop detection: recent turns are hashed; repeated identical payloads inside a window get blocked.
-- Prescriptive healing: upstream failures are classified by the kernel, which prescribes the heal — retry with backoff, failover when Pro chains are configured. Your agent's client loop executes it; a transient outage doesn't kill a long run, and `recovered` is journaled.
+- Automatic healing in the proxy: upstream failures (429/5xx/timeouts) are classified by the kernel and the proxy recovers them itself — one retry on the same model with backoff (honoring `Retry-After`), then a configured failover chain when Pro is licensed. Your agent's client doesn't change; `recovered` is journaled.
 - Checkpoints: the full event journal lands on disk; snapshot and restore a run to any point (time travel).
 - Dashboard: an SSE "brain" view streaming every forward, error, heal, and halt live.
 
 Design constraints I held to: Node >= 20, only node:http/node:crypto/node:fs/node:path, zero runtime dependencies in the core package, and zero cloud — no telemetry, no license server, no phoning home. The only network traffic is the LLM traffic you're proxying anyway.
 
-Open core: the kernel/healing/checkpoints/proxy/dashboard core is MIT. A Pro tier ($29, offline-verified signed license) adds multi-model failover chains config.
+Open core: the kernel/healing/checkpoints/proxy/dashboard core is MIT. A Pro tier ($29, offline-verified signed license) adds the multi-model failover chain config (up to 5 models).
 
 Install: `npx @abyan/aegis-mind`
 

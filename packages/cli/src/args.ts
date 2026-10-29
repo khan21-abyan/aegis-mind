@@ -4,7 +4,7 @@ export interface Args {
   upstream: string;
 }
 
-export const USAGE = `Usage: aegis-mind [--port <1-65535>] [--dash <1-65535>] [--upstream <url>]
+export const USAGE = `Usage: aegis-mind [--help] [--port <1-65535>] [--dash <1-65535>] [--upstream <url>]
 
 Env:
   AEGIS_BUDGET      spend cap (default: unlimited)
@@ -17,6 +17,11 @@ const isPort = (v: string): boolean => {
 };
 
 export class CliError extends Error {}
+
+/** Keep upstream credentials, paths and query tokens out of local event logs. */
+export const upstreamForTelemetry = (value: string): string => new URL(value).origin;
+
+export const isHelpRequest = (argv: string[]): boolean => argv.some((arg) => arg === "--help" || arg === "-h");
 
 export const parseArgs = (argv: string[]): Args => {
   const out: Args = { port: 4242, dash: 4343, upstream: "https://api.openai.com" };

@@ -10,12 +10,10 @@ Everything in `packages/core`, forever free under the MIT license:
 - OpenAI-compatible local proxy
 - Single-agent dashboard (live SSE event stream)
 
-## Pro — $29 (one-time, per developer)
+## Pro — sales paused (copy refresh pending)
 
-For agents you run unattended:
-
-- Multi-model failover chains config (`AEGIS_FAILOVERS` — the heal policy prescribes failover-first actions across your models; your client loop executes them)
+The proxy now performs automatic failover end-to-end: after one same-model retry, it walks the configured `AEGIS_FAILOVERS` chain (up to 5 models), with each attempt reserving budget. The behavior is covered by integration tests. The Gumroad offer stays unpublished until its page copy is updated to describe the now-real behavior; do not purchase or advertise until it is republished.
 
 ## The honest line
 
-Licenses are **offline-verified** with a signed Ed25519 signature checked on your machine. There is no account server, no activation server, and **no phoning home — ever**.
+All project code, including the CLI license gate, is MIT-licensed. The optional signed license file is not account- or machine-bound and is transferable; the gate is a convenience, not tamper-proof enforcement. There is no activation server or license-server call.

@@ -34,6 +34,8 @@ describe("dashboard", () => {
 
     const html = await (await fetch(url)).text();
     expect(html).toContain("AEGIS MIND");
+    expect(html).toContain("supervisor telemetry");
+    expect(html).toContain('new EventSource("/events")');
 
     // Append matching event FIRST (ruling), then connect SSE, then read chunks.
     log.append({ type: "turn_started", ts: 3, run: "r9", detail: {} });
@@ -54,6 +56,34 @@ describe("dashboard", () => {
       acc += dec.decode(chunk.value, { stream: true });
     }
     expect(acc).toContain("turn_started");
+  });
+
+  it("continues streaming events appended after the SSE connection is open", async () => {
+    dir = mkdtempSync(join(tmpdir(), "aegis-dash-live-"));
+    const log = CheckpointLog.open(dir);
+    server = createDashboard({ log, port: 0 });
+    await once(server, "listening");
+    const { port } = server.address() as AddressInfo;
+    const res = await fetch(`http://127.0.0.1:${port}/events`);
+    const reader = res.body!.getReader();
+    const decoder = new TextDecoder();
+    let acc = "";
+    const initial = await reader.read();
+    acc += decoder.decode(initial.value, { stream: true });
+    log.append({ type: "model_error", ts: Date.now(), run: "live-run", detail: {} });
+    const deadline = Date.now() + 1500;
+    while (!acc.includes("live-run")) {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) break;
+      const result = await Promise.race([
+        reader.read(),
+        new Promise<"timeout">((resolve) => setTimeout(() => resolve("timeout"), remaining)),
+      ]);
+      if (result === "timeout" || result.done) break;
+      acc += decoder.decode(result.value, { stream: true });
+    }
+    expect(acc).toContain("live-run");
+    await reader.cancel();
   });
 
   it("does not accumulate log.em listeners across create/close cycles", async () => {

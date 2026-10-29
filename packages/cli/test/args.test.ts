@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseArgs } from "../src/args.js";
+import { isHelpRequest, parseArgs, upstreamForTelemetry } from "../src/args.js";
 
 describe("parseArgs --upstream protocol guard", () => {
   it("accepts http: and https: upstream URLs", () => {
@@ -20,5 +20,21 @@ describe("parseArgs --upstream protocol guard", () => {
     expect(() => parseArgs(["--upstream", "not-a-url"])).toThrow(
       /--upstream expects an http: or https: URL, got "not-a-url"/,
     );
+  });
+});
+
+describe("upstream URL telemetry redaction", () => {
+  it("removes URL credentials, path, query and fragment before logging", () => {
+    expect(upstreamForTelemetry("https://alice:secret@example.com/v1?api_key=hidden#frag")).toBe(
+      "https://example.com",
+    );
+  });
+});
+
+describe("help flag", () => {
+  it("recognizes --help and -h without treating them as unknown flags", () => {
+    expect(isHelpRequest(["--help"])).toBe(true);
+    expect(isHelpRequest(["-h"])).toBe(true);
+    expect(isHelpRequest(["--port", "4242"])).toBe(false);
   });
 });

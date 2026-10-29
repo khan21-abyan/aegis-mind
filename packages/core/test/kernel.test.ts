@@ -13,4 +13,13 @@ describe("Kernel governance", () => {
     for (let i = 0; i < 4; i++) k.observe({ type: "call_fwd", ts: 0, run: "r", agent: "a", detail: { hash: "same" } });
     expect(k.admit(mk(5), 0).allow).toBe(false);
   });
+
+  it("reserves cost before dispatch so concurrent work cannot overspend", () => {
+    const k = new Kernel({ budgetCap: 0.001 });
+    const ctx = { run: "r", agent: "a", turn: 1, spent: 0, actions: [], lastHashes: [] };
+    expect(k.reserve(ctx, 0.001)).toBe(true);
+    expect(ctx.spent).toBe(0.001);
+    expect(k.reserve(ctx, 0.001)).toBe(false);
+    expect(ctx.spent).toBe(0.001);
+  });
 });

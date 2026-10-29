@@ -16,8 +16,6 @@ interface Client {
 const htmlPath = join(
   dirname(fileURLToPath(import.meta.url)),
   "..",
-  "..",
-  "dashboard",
   "public",
   "index.html",
 );

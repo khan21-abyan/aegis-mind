@@ -10,16 +10,16 @@ Repo: https://github.com/khan21-abyan/aegis-mind (public; local clone `aegis-min
 
 1. **GitHub:** https://github.com/khan21-abyan/aegis-mind is public. The empty duplicate `techmissionofficial/aegis-mind` was created during auth troubleshooting; it is not the launch repo and can be deleted by its owner.
 2. **npm:** `@abyan/aegis-mind@1.0.0` is published at https://www.npmjs.com/package/@abyan/aegis-mind. Install/run with `npx @abyan/aegis-mind`; the executable is `aegis-mind`. The unscoped name was rejected by npm as too similar to existing `aegismind`. Verified npm metadata, latest dist-tag, clean registry install and CLI validation smoke test. `@aegis-mind/core` is bundled and not separately published.
-3. **Gumroad:** Aegis Mind Pro License is live for $29 at https://abyanookhan.gumroad.com/l/frwvl. The saved content tells buyers that license fulfillment is manual and not instant. The live product summary and description disclose the manual, individual license delivery.
+3. **Gumroad:** Aegis Mind Pro License is UNPUBLISHED at https://abyanookhan.gumroad.com/l/frwvl (sales paused pending a copy refresh). The saved content still tells buyers that license fulfillment is manual and not instant; before republishing, update the page to describe the now-real automatic proxy failover (one same-model retry, then the configured chain).
    - For each order, run: `node tools/mint-license.mjs --private C:/Users/abuhu/.aegis-keys/private.pem --email <buyer> --plan pro --print`
    - Deliver the two-line signed license through Gumroad. Buyer saves it to `.aegis/license.txt` in the directory where they run Aegis Mind.
 4. **GitHub Release:** draft release for tag `v1.0.0` is saved. Review and publish it from GitHub Releases when ready. Note that the final scoped-package correction at commit `d55c384` is later than the existing `v1.0.0` tag; don't move existing tags without a deliberate versioning decision.
 5. **Marketing:** prepared launch copy is in `docs/launch/show-hn.md`, `reddit-localllama.md`, and `x-thread.md`. Human should review community rules and post from their own accounts; reply to comments personally.
 
 ## Product claims audited
-- Ships: budget/loop halts, event journal, explicitly supplied checkpoint snapshots/restores, loopback-only proxy and SSE dashboard, offline Ed25519 license verification, MIT core.
-- Does not ship: server-side automatic retries, real token-cost accounting, multi-agent supervision, Dashboard Pro panels.
-- Pro adds multi-model failover-chain configuration only. The agent's client loop executes retry/failover policies.
+- Ships: budget/loop halts, event journal, explicitly supplied checkpoint snapshots/restores, loopback-only proxy and SSE dashboard, offline Ed25519 license verification, MIT core, automatic in-proxy recovery (one same-model retry honoring `Retry-After`, then the Pro failover chain of up to 5 models).
+- Does not ship: real token-cost accounting, multi-agent supervision, Dashboard Pro panels.
+- Pro adds the multi-model failover-chain configuration; the proxy executes retry/failover automatically.
 - Before expanding commercial claims, review licensing posture: the CLI that gates Pro is MIT-licensed, so users can remove the gate from their copies. Never promise tamper-proof licensing or legal exclusivity.
 
 ## Final verification

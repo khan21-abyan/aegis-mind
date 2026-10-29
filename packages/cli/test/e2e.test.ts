@@ -6,7 +6,7 @@ import { join } from "node:path";
 import http from "node:http";
 import type { AddressInfo } from "node:net";
 import { CheckpointLog, createDashboard, createProxy, Heal, Kernel } from "../../core/src/index.js";
-import type { Event, HealResult } from "../../core/src/index.js";
+import type { Event } from "../../core/src/index.js";
 
 // The "sold-in-60-seconds" demo: upstream dies twice, the kernel keeps
 // admitting traffic, the heal policy keeps the client retrying, the run
@@ -15,11 +15,6 @@ import type { Event, HealResult } from "../../core/src/index.js";
 
 const FAILURES_BEFORE_UP = 2;
 const OK_BODY = JSON.stringify({ ok: true, usage: { total_tokens: 3 } });
-const RETRY_WAIT_BUDGET_MS = 25; // policy waitMs honored up to a small test budget
-
-const sleep = (ms: number): Promise<void> =>
-  ms > 0 ? new Promise((r) => setTimeout(r, ms)) : Promise.resolve();
-
 describe("e2e: upstream dies, kernel-heal policy + client loop recover, dashboard sees it, checkpoint restores", () => {
   let stub: http.Server | undefined;
   let proxy: http.Server | undefined;
@@ -37,8 +32,14 @@ describe("e2e: upstream dies, kernel-heal policy + client loop recover, dashboar
   it("fails the upstream twice, recovers on attempt 3, and shows it all", async () => {
     // Stub upstream: destroys nothing, just answers 502 twice, then 200.
     let upstreamCalls = 0;
-    stub = http.createServer((_req, res) => {
+    const models: string[] = [];
+    stub = http.createServer((req, res) => {
+      const chunks: Buffer[] = [];
+      req.on("data", (chunk: Buffer) => chunks.push(chunk));
+      req.on("end", () => {
       upstreamCalls += 1;
+      const body = JSON.parse(Buffer.concat(chunks).toString("utf8")) as { model: string };
+      models.push(body.model);
       if (upstreamCalls <= FAILURES_BEFORE_UP) {
         res.writeHead(502, { "content-type": "application/json" });
         res.end('{"error":{"code":"upstream_broken","message":"stub outage"}}');
@@ -46,6 +47,7 @@ describe("e2e: upstream dies, kernel-heal policy + client loop recover, dashboar
       }
       res.writeHead(200, { "content-type": "application/json" });
       res.end(OK_BODY);
+      });
     });
     stub.listen(0);
     await once(stub, "listening");
@@ -55,7 +57,7 @@ describe("e2e: upstream dies, kernel-heal policy + client loop recover, dashboar
     try {
       const log = CheckpointLog.open(root);
       const kernel = new Kernel({ budgetCap: 100 });
-      const heal = new Heal({ failovers: [] });
+      const heal = new Heal({ failovers: ["backup"] });
 
       // Deterministic collector wired straight to log.em — no SSE here.
       const collected: Event[] = [];
@@ -75,42 +77,20 @@ describe("e2e: upstream dies, kernel-heal policy + client loop recover, dashboar
       dash = createDashboard({ log, port: 0 });
       await once(dash, "listening");
 
-      // Client-side heal semantics the CLI/doc promise: on upstream failure the
-      // client consults heal.decide and retries per policy. The helper mirrors
-      // that by appending the model_error it reasoned about and, once a retried
-      // attempt succeeds, the recovered marker.
-      const sendWithHeal = async (run: string): Promise<Response> => {
-        const decisions: HealResult[] = [];
-        for (let attempt = 1; attempt <= FAILURES_BEFORE_UP + 1; attempt++) {
-          const res = await fetch(proxyUrl, {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ messages: [{ role: "user", content: "hi" }] }),
-          });
-          if (res.ok) {
-            if (attempt > 1) {
-              log.append({ type: "recovered", ts: Date.now(), run, detail: { attempt, retry: true } });
-            }
-            return res;
-          }
-          const ev: Event = { type: "model_error", ts: Date.now(), run, detail: { upstreamStatus: res.status } };
-          const decision = heal.decide(ev, attempt);
-          decisions.push(decision);
-          log.append(ev);
-          await sleep(Math.min(decision.waitMs, RETRY_WAIT_BUDGET_MS));
-        }
-        throw new Error(`not healed after ${FAILURES_BEFORE_UP + 1} attempts: ${JSON.stringify(decisions)}`);
-      };
-
-      const run = "e2e-demo";
-      const res = await sendWithHeal(run);
+      // One client request now exercises proxy-managed retry + Pro failover.
+      const res = await fetch(proxyUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ model: "primary", messages: [{ role: "user", content: "hi" }] }),
+      });
 
       expect(upstreamCalls).toBe(FAILURES_BEFORE_UP + 1);
+      expect(models).toEqual(["primary", "primary", "backup"]);
       expect(res.status).toBe(200);
       expect(await res.text()).toBe(OK_BODY);
 
-      // Full event story, in order: forward → returned(502) → heal →
-      // forward → returned(502) → heal → forward → returned(200) → recovered.
+      // Full event story, in order: primary forward/error, retry forward/error,
+      // failover forward/success, recovered.
       expect(collected.map((e) => e.type)).toEqual([
         "call_fwd",
         "call_returned",
@@ -151,10 +131,10 @@ describe("e2e: upstream dies, kernel-heal policy + client loop recover, dashboar
       // Checkpoint: journal exists after the run; snapshot survives restore.
       expect(existsSync(join(root, ".aegis", "events.jsonl"))).toBe(true);
       const n = log.snapshot({ turns: 3, spent: 0.003 });
-      log.append({ type: "checkpoint", ts: Date.now(), run, detail: { snap: n } });
       expect(existsSync(log.snapFile(n))).toBe(true);
       expect(log.list()).toContain(n);
       expect(log.restore(n)).toEqual({ turns: 3, spent: 0.003 });
+      expect(log.replay(n).map((event) => event.detail.snap)).toEqual([n]);
 
       log.em.removeAllListeners("event");
     } finally {

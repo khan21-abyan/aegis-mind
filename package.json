@@ -1,6 +1,6 @@
 {
   "name": "@abyan/aegis-mind",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Local, zero-cloud supervisor kernel (proxy + governance + healing policies + checkpoints + dashboard) for autonomous AI agents.",
   "bin": {
     "aegis-mind": "packages/cli/dist/index.js"
@@ -13,7 +13,7 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@aegis-mind/core": "0.1.0"
+    "@aegis-mind/core": "0.1.1"
   },
   "bundleDependencies": [
     "@aegis-mind/core"
